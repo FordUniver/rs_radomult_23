@@ -1,3 +1,8 @@
+# Repo specific
+*_colorings.npy
+*_values.npy
+*_densities.npy
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
