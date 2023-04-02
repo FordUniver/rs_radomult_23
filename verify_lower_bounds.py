@@ -144,7 +144,13 @@ if __name__=='__main__':
 
             with open(densities_file, 'wb') as f: pickle.dump((type_to_flags, pair_densities), f)
 
-        used_types_and_flags = types_and_flags[args.problem] or type_to_flags
+        # print(pair_densities[0])
+        # print(pair_densities[10])
+        # print(pair_densities[100])
+
+        # exit()
+
+        used_types_and_flags = types_and_flags[args.problem] or {k: sorted(v) for k,v in type_to_flags.items()}
 
         print(f"Done in {time.perf_counter()-tm:.1f}s.")
 
@@ -165,11 +171,11 @@ if __name__=='__main__':
                 assert xmatrices[ftype].is_positive_semidefinite()
         print(f"Done in {time.perf_counter()-tm:.1f}s.")
 
-
         # Verify values
 
         tm = time.perf_counter()
         print(f"\nVerifying values ...")
+        collected_vals = []
         for coloring, pds, val in zip(tqdm(colorings), pair_densities, values):
             temp = val
             for ftype, flags in used_types_and_flags.items():
@@ -181,7 +187,8 @@ if __name__=='__main__':
                         M[flags.index(f1), flags.index(f2)] = d
                         M[flags.index(f2), flags.index(f1)] = d
                 temp -= sum(sum(M.elementwise_product(X)))
-            assert temp >= lambdas[args.problem]
+            collected_vals.append(temp)
+        assert min(collected_vals) >= lambdas[args.problem]
         print(f"Done in {time.perf_counter()-tm:.1f}s.")
 
 
