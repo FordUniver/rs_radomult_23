@@ -2,7 +2,7 @@ import sys
 import os
 import time
 import pickle
-from copy import copy, deepcopy
+from copy import deepcopy
 from typing import Union, Iterable, Callable, Tuple, List, Dict, Any, Optional
 
 import multiprocessing as mp
@@ -10,9 +10,6 @@ from tqdm import tqdm
 
 import numpy as np
 import itertools
-import math
-import random
-import collections
 
 from sage.all import *
 
@@ -204,9 +201,9 @@ def canonize(
         for coloring, shift, basis, transformed_coloring in current_leafs:
             available_elements = get_available_elements(coloring, q, shift=shift, basis=basis)
             
-            for c in range(minc, c+2):
-                candidates = [x for x in Fqn if coloring[vec_to_idx(x, q)] == c and available_elements[vec_to_idx(x, q)]]
-                remainders = [x for x in Fqn if coloring[vec_to_idx(x, q)] > c and available_elements[vec_to_idx(x, q)]]
+            for col in range(minc, c+2):
+                candidates = [x for x in Fqn if coloring[vec_to_idx(x, q)] == col and available_elements[vec_to_idx(x, q)]]
+                remainders = [x for x in Fqn if coloring[vec_to_idx(x, q)] > col and available_elements[vec_to_idx(x, q)]]
                 if len(remainders) == 0: candidates = candidates[:1]
                 if len(candidates) > 0: break
             
@@ -251,9 +248,9 @@ def get_isomorphism_classes(
 
         potential_children = []
         for parent in current_leafs:
-            for c in range(1, c+1):
+            for col in range(1, c+1):
                 child = deepcopy(parent)
-                child[vec_to_idx(idx, q)] = c
+                child[vec_to_idx(idx, q)] = col
                 potential_children.append(child)
 
         arguments = [(child, q, c, None, [], False, invariant, True) for child in potential_children]
